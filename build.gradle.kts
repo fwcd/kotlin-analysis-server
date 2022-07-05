@@ -14,9 +14,20 @@ repositories {
 dependencies {
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-
     // Use the Kotlin JDK 8 standard library.
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    // LSP library
+    implementation("org.eclipse.lsp4j:org.eclipse.lsp4j:0.12.0")
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(11))
 }
 
 testing {
