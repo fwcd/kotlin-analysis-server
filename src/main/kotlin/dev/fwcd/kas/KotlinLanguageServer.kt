@@ -16,7 +16,7 @@ class KotlinLanguageServer: LanguageServer, LanguageClientAware {
     override fun initialize(params: InitializeParams?): CompletableFuture<InitializeResult> {
         val result = InitializeResult(
             ServerCapabilities().apply {
-               // TODO
+                // TODO
             },
             ServerInfo("Kotlin Analyzer Server")
         )
