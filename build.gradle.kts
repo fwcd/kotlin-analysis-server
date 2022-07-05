@@ -27,7 +27,7 @@ dependencies {
     // Kotlin compiler and analysis API
     implementation("org.jetbrains.kotlin:analysis-api-standalone-for-ide:1.8.0-dev-153")
     // LSP library
-    implementation("org.eclipse.lsp4j:org.eclipse.lsp4j:0.12.0")
+    implementation("org.eclipse.lsp4j:org.eclipse.lsp4j:0.14.0")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
