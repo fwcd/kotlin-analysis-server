@@ -1,4 +1,5 @@
 val analysisApiVersion: String by project
+val intellijVersion: String by project
 
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
@@ -15,13 +16,17 @@ repositories {
     // Add Maven repos for Kotlin compiler etc.
     maven(url = "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/bootstrap")
     maven(url = "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-ide-plugin-dependencies")
+    maven(url = "https://www.jetbrains.com/intellij-repository/releases")
+    maven(url = "https://cache-redirector.jetbrains.com/intellij-third-party-dependencies")
 }
 
 dependencies {
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    // Use the Kotlin standard library.
+    // Kotlin standard library
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    // IntelliJ IDEA APIs distributed as a library (required by the analysis API and Kotlin compiler)
+    implementation("com.jetbrains.intellij.platform:core:$intellijVersion")
     // Kotlin compiler and analysis API
     // See https://github.com/google/ksp/blob/c6dd0c/kotlin-analysis-api/build.gradle.kts#L33-L56
     implementation("org.jetbrains.kotlin:kotlin-compiler:$analysisApiVersion")
