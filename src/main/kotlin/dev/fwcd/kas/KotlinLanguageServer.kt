@@ -74,6 +74,7 @@ class KotlinLanguageServer: LanguageServer, LanguageClientAware {
         val result = InitializeResult(
             ServerCapabilities().apply {
                 completionProvider = CompletionOptions()
+                diagnosticProvider = DiagnosticRegistrationOptions()
             },
             ServerInfo("Kotlin Analysis Server")
         )
