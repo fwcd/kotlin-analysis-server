@@ -1,3 +1,5 @@
+val analysisApiVersion: String by project
+
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.7.0"
@@ -11,21 +13,42 @@ repositories {
     mavenCentral()
 
     // Add Maven repos for Kotlin compiler etc.
-    maven(url = "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-ide-plugin-dependencies")
     maven(url = "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/bootstrap")
-    maven(url = "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-ide")
-    maven(url = "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-dependencies")
-    maven(url = "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-plugin")
-    maven(url = "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
+    maven(url = "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-ide-plugin-dependencies")
 }
 
 dependencies {
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    // Use the Kotlin JDK 8 standard library.
+    // Use the Kotlin standard library.
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     // Kotlin compiler and analysis API
-    implementation("org.jetbrains.kotlin:analysis-api-standalone-for-ide:1.8.0-dev-153")
+    // See https://github.com/google/ksp/blob/c6dd0c/kotlin-analysis-api/build.gradle.kts#L33-L56
+    implementation("org.jetbrains.kotlin:kotlin-compiler:$analysisApiVersion")
+    implementation("org.jetbrains.kotlin:high-level-api-fir-for-ide:$analysisApiVersion") {
+        isTransitive = false
+    }
+    implementation("org.jetbrains.kotlin:high-level-api-for-ide:$analysisApiVersion") {
+        isTransitive = false
+    }
+    implementation("org.jetbrains.kotlin:low-level-api-fir-for-ide:$analysisApiVersion") {
+        isTransitive = false
+    }
+    implementation("org.jetbrains.kotlin:analysis-api-providers-for-ide:$analysisApiVersion") {
+        isTransitive = false
+    }
+    implementation("org.jetbrains.kotlin:analysis-project-structure-for-ide:$analysisApiVersion") {
+        isTransitive = false
+    }
+    implementation("org.jetbrains.kotlin:symbol-light-classes-for-ide:$analysisApiVersion") {
+        isTransitive = false
+    }
+    implementation("org.jetbrains.kotlin:analysis-api-standalone-for-ide:$analysisApiVersion") {
+        isTransitive = false
+    }
+    implementation("org.jetbrains.kotlin:high-level-api-impl-base-for-ide:$analysisApiVersion") {
+        isTransitive = false
+    }
     // LSP library
     implementation("org.eclipse.lsp4j:org.eclipse.lsp4j:0.14.0")
 }
