@@ -22,17 +22,21 @@ class KotlinTextDocumentService: TextDocumentService {
     /** The Kotlin analysis API session. */
     lateinit var session: StandaloneAnalysisAPISession
 
+    /** Looks up a KtFile (the AST) for a URI via PsiManager. */
+    private fun findKtFile(uri: String): KtFile? {
+        val fs = StandardFileSystems.local()
+        val psiManager = PsiManager.getInstance(session.project)
+        val path = Path.of(URI(uri))
+        val vFile = fs.findFileByPath(path.toString())
+        val psiFile = vFile?.let(psiManager::findFile)
+        return psiFile as? KtFile
+    }
+
     override fun completion(position: CompletionParams?): CompletableFuture<Either<MutableList<CompletionItem>, CompletionList>> {
         val items = mutableListOf<CompletionItem>()
 
-        // Look up KtFile via PsiManager
-        val fs = StandardFileSystems.local()
-        val psiManager = PsiManager.getInstance(session.project)
-
         position
-            ?.let { Path.of(URI(it.textDocument.uri)) }
-            ?.let { fs.findFileByPath(it.toString()) }
-            ?.let { psiManager.findFile(it) as? KtFile }
+            ?.let { findKtFile(it.textDocument.uri) }
             ?.also { ktFile ->
                 // TODO: Proper completions, also figure out how the analysis API might be useful here (analyze { ... })
                 for (decl in ktFile.getFileOrScriptDeclarations()) {
