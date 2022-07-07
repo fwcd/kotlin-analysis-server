@@ -4,10 +4,7 @@ import com.intellij.mock.MockApplication
 import com.intellij.mock.MockProject
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.Disposer
-import org.eclipse.lsp4j.InitializeParams
-import org.eclipse.lsp4j.InitializeResult
-import org.eclipse.lsp4j.ServerCapabilities
-import org.eclipse.lsp4j.ServerInfo
+import org.eclipse.lsp4j.*
 import org.eclipse.lsp4j.services.*
 import org.jetbrains.kotlin.analysis.api.standalone.configureApplicationEnvironment
 import org.jetbrains.kotlin.analysis.api.standalone.configureProjectEnvironment
@@ -70,7 +67,7 @@ class KotlinLanguageServer: LanguageServer, LanguageClientAware {
         // Assemble LSP initialization response
         val result = InitializeResult(
             ServerCapabilities().apply {
-                // TODO
+                completionProvider = CompletionOptions()
             },
             ServerInfo("Kotlin Analysis Server")
         )
