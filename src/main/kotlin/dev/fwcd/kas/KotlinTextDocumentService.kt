@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.analysis.api.standalone.StandaloneAnalysisAPISession
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.incremental.ChangesCollector.Companion.getNonPrivateNames
 import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.psi.psiUtil.getFileOrScriptDeclarations
 import java.net.URI
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
@@ -22,7 +23,6 @@ class KotlinTextDocumentService: TextDocumentService {
     lateinit var session: StandaloneAnalysisAPISession
 
     override fun completion(position: CompletionParams?): CompletableFuture<Either<MutableList<CompletionItem>, CompletionList>> {
-        // TODO: Generate proper completions
         val items = mutableListOf<CompletionItem>()
 
         // Look up KtFile via PsiManager
@@ -34,9 +34,9 @@ class KotlinTextDocumentService: TextDocumentService {
             ?.let { fs.findFileByPath(it.toString()) }
             ?.let { psiManager.findFile(it) as? KtFile }
             ?.also { ktFile ->
-                analyze(ktFile) {
-                    // TODO: Do something proper
-                    items.add(CompletionItem(ktFile.getFileSymbol().toString()))
+                // TODO: Proper completions, also figure out how the analysis API might be useful here (analyze { ... })
+                for (decl in ktFile.getFileOrScriptDeclarations()) {
+                    items.add(CompletionItem(decl.name))
                 }
             }
 
