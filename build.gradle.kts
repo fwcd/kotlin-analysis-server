@@ -27,6 +27,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     // IntelliJ IDEA APIs distributed as a library (required by the analysis API and Kotlin compiler)
     implementation("com.jetbrains.intellij.platform:core:$intellijVersion")
+    implementation("com.jetbrains.intellij.platform:core-impl:$intellijVersion")
     // Kotlin compiler and analysis API
     // See https://github.com/google/ksp/blob/c6dd0c/kotlin-analysis-api/build.gradle.kts#L33-L56
     implementation("org.jetbrains.kotlin:kotlin-compiler:$analysisApiVersion")

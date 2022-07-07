@@ -50,10 +50,6 @@ class KotlinLanguageServer: LanguageServer, LanguageClientAware {
         compilerConfig.addKotlinSourceRoots(sourceRoots)
         compilerConfig.put(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
 
-        // Bootstrap Kotlin compiler application environment for standalone analysis mode
-        val application = ApplicationManager.getApplication() as MockApplication
-        configureApplicationEnvironment(application)
-
         // Bootstrap Kotlin core environment for standalone analysis mode
         val coreEnv = KotlinCoreEnvironment.createForProduction(
             Disposer.newDisposable(),
@@ -66,6 +62,10 @@ class KotlinLanguageServer: LanguageServer, LanguageClientAware {
             coreEnv::createPackagePartProvider
         )
         textDocuments.coreEnv = coreEnv
+
+        // Bootstrap Kotlin compiler application environment for standalone analysis mode
+        val application = ApplicationManager.getApplication() as MockApplication
+        configureApplicationEnvironment(application)
 
         // Assemble LSP initialization response
         val result = InitializeResult(
