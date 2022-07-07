@@ -28,9 +28,9 @@ import java.util.concurrent.CompletableFuture
  */
 class KotlinLanguageServer: LanguageServer, LanguageClientAware {
     /** The text document service responsible for handling code completion requests, etc. */
-    val textDocuments = KotlinTextDocumentService()
+    private val textDocuments = KotlinTextDocumentService()
     /** The text document service responsible for handling workspace updates, etc. */
-    val workspaces = KotlinWorkspaceService()
+    private val workspaces = KotlinWorkspaceService()
 
     /** A proxy object for sending messages to the client. */
     private var client: LanguageClient? = null
@@ -65,6 +65,7 @@ class KotlinLanguageServer: LanguageServer, LanguageClientAware {
             compilerConfig,
             coreEnv::createPackagePartProvider
         )
+        textDocuments.coreEnv = coreEnv
 
         // Assemble LSP initialization response
         val result = InitializeResult(
