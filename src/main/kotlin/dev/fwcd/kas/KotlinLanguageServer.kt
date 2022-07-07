@@ -42,6 +42,10 @@ class KotlinLanguageServer: LanguageServer, LanguageClientAware {
         val sourceRoots = workspaceFolders
             .map { Path.of(URI(it.uri)).resolve("src").resolve("main").resolve("kotlin") }
 
+        // Configure headless IDEA to not spawn an app in the Dock
+        // https://stackoverflow.com/questions/17460777/stop-java-coffee-cup-icon-from-appearing-in-the-dock-on-mac-osx
+        System.setProperty("apple.awt.UIElement", "true")
+
         // Set up standalone analysis API session
         val session = buildStandaloneAnalysisAPISession {
             val project = project
