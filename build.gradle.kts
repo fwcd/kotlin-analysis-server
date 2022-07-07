@@ -25,9 +25,13 @@ dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     // Kotlin standard library
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.3.4")
+    // LSP library
+    implementation("org.eclipse.lsp4j:org.eclipse.lsp4j:0.14.0")
     // IntelliJ IDEA APIs distributed as a library (required by the analysis API and Kotlin compiler)
     implementation("com.jetbrains.intellij.platform:core:$intellijVersion")
     implementation("com.jetbrains.intellij.platform:core-impl:$intellijVersion")
+    implementation("com.jetbrains.intellij.platform:util:$intellijVersion")
     // Kotlin compiler and analysis API
     // See https://github.com/google/ksp/blob/c6dd0c/kotlin-analysis-api/build.gradle.kts#L33-L56
     implementation("org.jetbrains.kotlin:kotlin-compiler:$analysisApiVersion")
@@ -55,8 +59,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:high-level-api-impl-base-for-ide:$analysisApiVersion") {
         isTransitive = false
     }
-    // LSP library
-    implementation("org.eclipse.lsp4j:org.eclipse.lsp4j:0.14.0")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

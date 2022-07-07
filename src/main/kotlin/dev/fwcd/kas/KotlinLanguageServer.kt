@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.platform.TargetPlatform
 import org.jetbrains.kotlin.platform.jvm.JdkPlatform
 import org.jetbrains.kotlin.psi.KtFile
 import java.net.URI
+import java.net.URLClassLoader
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
