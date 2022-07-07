@@ -1,19 +1,17 @@
 package dev.fwcd.kas
 
-import com.intellij.mock.MockApplication
-import com.intellij.mock.MockProject
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.vfs.StandardFileSystems
+import com.intellij.psi.PsiManager
+import com.intellij.psi.search.ProjectScope
 import org.eclipse.lsp4j.*
 import org.eclipse.lsp4j.services.*
-import org.jetbrains.kotlin.analysis.api.standalone.configureApplicationEnvironment
-import org.jetbrains.kotlin.analysis.api.standalone.configureProjectEnvironment
-import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
-import org.jetbrains.kotlin.cli.common.config.addKotlinSourceRoots
-import org.jetbrains.kotlin.cli.common.messages.MessageCollector
-import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
-import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
-import org.jetbrains.kotlin.config.CompilerConfiguration
+import org.jetbrains.kotlin.analysis.api.standalone.buildStandaloneAnalysisAPISession
+import org.jetbrains.kotlin.analysis.project.structure.builder.buildKtSourceModule
+import org.jetbrains.kotlin.cli.jvm.compiler.TopDownAnalyzerFacadeForJVM
+import org.jetbrains.kotlin.config.JvmTarget
+import org.jetbrains.kotlin.platform.TargetPlatform
+import org.jetbrains.kotlin.platform.jvm.JdkPlatform
+import org.jetbrains.kotlin.psi.KtFile
 import java.net.URI
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
@@ -42,27 +40,27 @@ class KotlinLanguageServer: LanguageServer, LanguageClientAware {
         val sourceRoots = workspaceFolders
             .map { Path.of(URI(it.uri)).resolve("src").resolve("main").resolve("kotlin").toString() }
 
-        // Configure Kotlin compiler
-        val compilerConfig = CompilerConfiguration()
-        compilerConfig.addKotlinSourceRoots(sourceRoots)
-        compilerConfig.put(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+        // Set up standalone analysis API session
+        val session = buildStandaloneAnalysisAPISession {
+            val project = project
+            buildKtModuleProvider {
+                addModule(buildKtSourceModule {
+                    val fs = StandardFileSystems.local()
+                    val psiManager = PsiManager.getInstance(project)
+                    val ktFiles = sourceRoots
+                        .mapNotNull { fs.findFileByPath(it) }
+                        .mapNotNull { psiManager.findFile(it) }
+                        .map { it as KtFile }
+                    addSourceRoots(ktFiles)
 
-        // Bootstrap Kotlin core environment for standalone analysis mode
-        val coreEnv = KotlinCoreEnvironment.createForProduction(
-            Disposer.newDisposable(),
-            compilerConfig,
-            EnvironmentConfigFiles.JVM_CONFIG_FILES
-        )
-        configureProjectEnvironment(
-            coreEnv.project as MockProject,
-            compilerConfig,
-            coreEnv::createPackagePartProvider
-        )
-        textDocuments.coreEnv = coreEnv
-
-        // Bootstrap Kotlin compiler application environment for standalone analysis mode
-        val application = ApplicationManager.getApplication() as MockApplication
-        configureApplicationEnvironment(application)
+                    contentScope = TopDownAnalyzerFacadeForJVM.newModuleSearchScope(project, ktFiles)
+                    platform = TargetPlatform(setOf(JdkPlatform(JvmTarget.DEFAULT)))
+                    moduleName = "Language server project sources" // TODO
+                    this.project = project
+                })
+            }
+        }
+        textDocuments.session = session
 
         // Assemble LSP initialization response
         val result = InitializeResult(
