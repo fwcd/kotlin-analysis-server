@@ -13,8 +13,10 @@ import org.jetbrains.kotlin.platform.TargetPlatform
 import org.jetbrains.kotlin.platform.jvm.JdkPlatform
 import org.jetbrains.kotlin.psi.KtFile
 import java.net.URI
+import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
+import kotlin.streams.toList
 
 /**
  * The language server implementation, responsible for basic lifecycle management, i.e.
@@ -32,13 +34,12 @@ class KotlinLanguageServer: LanguageServer, LanguageClientAware {
 
     override fun initialize(params: InitializeParams?): CompletableFuture<InitializeResult> {
         // TODO: Investigate proper lifecycle management with disposables (should we store a Disposable in the class?)
-        // TODO: Make source-resolution more flexible (currently only Gradle-style src/main/kotlin folders are considered)
-        // TODO: Add proper message collector (e.g. one that logs the messages)?
 
         // Locate sources
+        // TODO: Make source-resolution more flexible (currently only Gradle-style src/main/kotlin folders are considered)
         val workspaceFolders = params?.workspaceFolders ?: listOf()
         val sourceRoots = workspaceFolders
-            .map { Path.of(URI(it.uri)).resolve("src").resolve("main").resolve("kotlin").toString() }
+            .map { Path.of(URI(it.uri)).resolve("src").resolve("main").resolve("kotlin") }
 
         // Set up standalone analysis API session
         val session = buildStandaloneAnalysisAPISession {
@@ -47,8 +48,10 @@ class KotlinLanguageServer: LanguageServer, LanguageClientAware {
                 addModule(buildKtSourceModule {
                     val fs = StandardFileSystems.local()
                     val psiManager = PsiManager.getInstance(project)
+                    // TODO: We should handle (virtual) file changes announced via LSP with the VFS
                     val ktFiles = sourceRoots
-                        .mapNotNull { fs.findFileByPath(it) }
+                        .flatMap { Files.walk(it).toList() }
+                        .mapNotNull { fs.findFileByPath(it.toString()) }
                         .mapNotNull { psiManager.findFile(it) }
                         .map { it as KtFile }
                     addSourceRoots(ktFiles)
