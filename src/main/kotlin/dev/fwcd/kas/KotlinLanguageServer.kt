@@ -48,23 +48,13 @@ class KotlinLanguageServer: LanguageServer, LanguageClientAware {
 
         // Set up standalone analysis API session
         val session = buildStandaloneAnalysisAPISession {
-            val project = project
             buildKtModuleProvider {
                 addModule(buildKtSourceModule {
-                    val fs = StandardFileSystems.local()
-                    val psiManager = PsiManager.getInstance(project)
                     // TODO: We should handle (virtual) file changes announced via LSP with the VFS
-                    val ktFiles = sourceRoots
-                        .flatMap { Files.walk(it).toList() }
-                        .mapNotNull { fs.findFileByPath(it.toString()) }
-                        .mapNotNull { psiManager.findFile(it) }
-                        .map { it as KtFile }
-                    addSourceRoots(ktFiles)
+                    addSourceRoots(sourceRoots)
 
-                    contentScope = TopDownAnalyzerFacadeForJVM.newModuleSearchScope(project, ktFiles)
                     platform = TargetPlatform(setOf(JdkPlatform(JvmTarget.DEFAULT)))
                     moduleName = "Language server project sources" // TODO
-                    this.project = project
                 })
             }
         }

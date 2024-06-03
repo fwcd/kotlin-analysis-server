@@ -12,9 +12,7 @@ import org.jetbrains.kotlin.analysis.api.analyze
 import org.jetbrains.kotlin.analysis.api.components.KtDiagnosticCheckerFilter
 import org.jetbrains.kotlin.analysis.api.diagnostics.KtDiagnosticWithPsi
 import org.jetbrains.kotlin.analysis.api.standalone.StandaloneAnalysisAPISession
-import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.diagnostics.Severity
-import org.jetbrains.kotlin.incremental.ChangesCollector.Companion.getNonPrivateNames
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.psiUtil.getFileOrScriptDeclarations
 import java.net.URI

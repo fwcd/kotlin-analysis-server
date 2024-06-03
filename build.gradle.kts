@@ -1,9 +1,9 @@
-val kotlinVersion: String by project
+val analysisApiKotlinVersion: String by project
 val intellijVersion: String by project
 
 plugins {
-    // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
-    id("org.jetbrains.kotlin.jvm") version "1.7.0"
+    // Apply the Kotlin JVM Plugin to add support for Kotlin.
+    kotlin("jvm")
 
     // Apply the application plugin to add support for building a CLI application in Java.
     application
@@ -33,30 +33,30 @@ dependencies {
     implementation("com.jetbrains.intellij.platform:core-impl:$intellijVersion")
     implementation("com.jetbrains.intellij.platform:util:$intellijVersion")
     // Kotlin compiler and analysis API
-    // See https://github.com/google/ksp/blob/c6dd0c/kotlin-analysis-api/build.gradle.kts#L33-L56
-    implementation("org.jetbrains.kotlin:kotlin-compiler:$kotlinVersion")
-    implementation("org.jetbrains.kotlin:high-level-api-fir-for-ide:$kotlinVersion") {
+    // See https://github.com/google/ksp/blob/319ddf/kotlin-analysis-api/build.gradle.kts
+    implementation("org.jetbrains.kotlin:kotlin-compiler:$analysisApiKotlinVersion")
+    implementation("org.jetbrains.kotlin:high-level-api-fir-for-ide:$analysisApiKotlinVersion") {
         isTransitive = false
     }
-    implementation("org.jetbrains.kotlin:high-level-api-for-ide:$kotlinVersion") {
+    implementation("org.jetbrains.kotlin:high-level-api-for-ide:$analysisApiKotlinVersion") {
         isTransitive = false
     }
-    implementation("org.jetbrains.kotlin:low-level-api-fir-for-ide:$kotlinVersion") {
+    implementation("org.jetbrains.kotlin:low-level-api-fir-for-ide:$analysisApiKotlinVersion") {
         isTransitive = false
     }
-    implementation("org.jetbrains.kotlin:analysis-api-providers-for-ide:$kotlinVersion") {
+    implementation("org.jetbrains.kotlin:analysis-api-providers-for-ide:$analysisApiKotlinVersion") {
         isTransitive = false
     }
-    implementation("org.jetbrains.kotlin:analysis-project-structure-for-ide:$kotlinVersion") {
+    implementation("org.jetbrains.kotlin:analysis-project-structure-for-ide:$analysisApiKotlinVersion") {
         isTransitive = false
     }
-    implementation("org.jetbrains.kotlin:symbol-light-classes-for-ide:$kotlinVersion") {
+    implementation("org.jetbrains.kotlin:symbol-light-classes-for-ide:$analysisApiKotlinVersion") {
         isTransitive = false
     }
-    implementation("org.jetbrains.kotlin:analysis-api-standalone-for-ide:$kotlinVersion") {
+    implementation("org.jetbrains.kotlin:analysis-api-standalone-for-ide:$analysisApiKotlinVersion") {
         isTransitive = false
     }
-    implementation("org.jetbrains.kotlin:high-level-api-impl-base-for-ide:$kotlinVersion") {
+    implementation("org.jetbrains.kotlin:high-level-api-impl-base-for-ide:$analysisApiKotlinVersion") {
         isTransitive = false
     }
 }
