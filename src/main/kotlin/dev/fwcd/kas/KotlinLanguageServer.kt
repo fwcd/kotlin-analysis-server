@@ -1,23 +1,13 @@
 package dev.fwcd.kas
 
-import com.intellij.openapi.vfs.StandardFileSystems
-import com.intellij.psi.PsiManager
-import com.intellij.psi.search.ProjectScope
 import org.eclipse.lsp4j.*
 import org.eclipse.lsp4j.services.*
 import org.jetbrains.kotlin.analysis.api.standalone.buildStandaloneAnalysisAPISession
 import org.jetbrains.kotlin.analysis.project.structure.builder.buildKtSourceModule
-import org.jetbrains.kotlin.cli.jvm.compiler.TopDownAnalyzerFacadeForJVM
-import org.jetbrains.kotlin.config.JvmTarget
-import org.jetbrains.kotlin.platform.TargetPlatform
-import org.jetbrains.kotlin.platform.jvm.JdkPlatform
-import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.platform.jvm.JvmPlatforms
 import java.net.URI
-import java.net.URLClassLoader
-import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
-import kotlin.streams.toList
 
 /**
  * The language server implementation, responsible for basic lifecycle management, i.e.
@@ -49,12 +39,14 @@ class KotlinLanguageServer: LanguageServer, LanguageClientAware {
         // Set up standalone analysis API session
         val session = buildStandaloneAnalysisAPISession {
             buildKtModuleProvider {
+                platform = JvmPlatforms.defaultJvmPlatform
+
                 addModule(buildKtSourceModule {
+                    moduleName = "Language server project sources" // TODO
+                    platform = JvmPlatforms.defaultJvmPlatform
+
                     // TODO: We should handle (virtual) file changes announced via LSP with the VFS
                     addSourceRoots(sourceRoots)
-
-                    platform = TargetPlatform(setOf(JdkPlatform(JvmTarget.DEFAULT)))
-                    moduleName = "Language server project sources" // TODO
                 })
             }
         }
