@@ -1,4 +1,4 @@
-val analysisApiVersion: String by project
+val kotlinVersion: String by project
 val intellijVersion: String by project
 
 plugins {
@@ -34,29 +34,29 @@ dependencies {
     implementation("com.jetbrains.intellij.platform:util:$intellijVersion")
     // Kotlin compiler and analysis API
     // See https://github.com/google/ksp/blob/c6dd0c/kotlin-analysis-api/build.gradle.kts#L33-L56
-    implementation("org.jetbrains.kotlin:kotlin-compiler:$analysisApiVersion")
-    implementation("org.jetbrains.kotlin:high-level-api-fir-for-ide:$analysisApiVersion") {
+    implementation("org.jetbrains.kotlin:kotlin-compiler:$kotlinVersion")
+    implementation("org.jetbrains.kotlin:high-level-api-fir-for-ide:$kotlinVersion") {
         isTransitive = false
     }
-    implementation("org.jetbrains.kotlin:high-level-api-for-ide:$analysisApiVersion") {
+    implementation("org.jetbrains.kotlin:high-level-api-for-ide:$kotlinVersion") {
         isTransitive = false
     }
-    implementation("org.jetbrains.kotlin:low-level-api-fir-for-ide:$analysisApiVersion") {
+    implementation("org.jetbrains.kotlin:low-level-api-fir-for-ide:$kotlinVersion") {
         isTransitive = false
     }
-    implementation("org.jetbrains.kotlin:analysis-api-providers-for-ide:$analysisApiVersion") {
+    implementation("org.jetbrains.kotlin:analysis-api-providers-for-ide:$kotlinVersion") {
         isTransitive = false
     }
-    implementation("org.jetbrains.kotlin:analysis-project-structure-for-ide:$analysisApiVersion") {
+    implementation("org.jetbrains.kotlin:analysis-project-structure-for-ide:$kotlinVersion") {
         isTransitive = false
     }
-    implementation("org.jetbrains.kotlin:symbol-light-classes-for-ide:$analysisApiVersion") {
+    implementation("org.jetbrains.kotlin:symbol-light-classes-for-ide:$kotlinVersion") {
         isTransitive = false
     }
-    implementation("org.jetbrains.kotlin:analysis-api-standalone-for-ide:$analysisApiVersion") {
+    implementation("org.jetbrains.kotlin:analysis-api-standalone-for-ide:$kotlinVersion") {
         isTransitive = false
     }
-    implementation("org.jetbrains.kotlin:high-level-api-impl-base-for-ide:$analysisApiVersion") {
+    implementation("org.jetbrains.kotlin:high-level-api-impl-base-for-ide:$kotlinVersion") {
         isTransitive = false
     }
 }
