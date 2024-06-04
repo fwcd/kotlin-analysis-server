@@ -1,9 +1,16 @@
 package dev.fwcd.kas
 
+import com.intellij.mock.MockProject
+import com.intellij.openapi.util.Disposer
 import org.eclipse.lsp4j.*
 import org.eclipse.lsp4j.services.*
+import org.jetbrains.kotlin.analysis.api.KtAnalysisApiInternals
+import org.jetbrains.kotlin.analysis.api.lifetime.KtLifetimeTokenProvider
+import org.jetbrains.kotlin.analysis.api.standalone.KtAlwaysAccessibleLifetimeTokenProvider
+import org.jetbrains.kotlin.analysis.api.standalone.base.project.structure.StandaloneProjectFactory
 import org.jetbrains.kotlin.analysis.api.standalone.buildStandaloneAnalysisAPISession
 import org.jetbrains.kotlin.analysis.project.structure.builder.buildKtSourceModule
+import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreApplicationEnvironmentMode
 import org.jetbrains.kotlin.platform.jvm.JvmPlatforms
 import java.net.URI
 import java.nio.file.Path
@@ -23,6 +30,7 @@ class KotlinLanguageServer: LanguageServer, LanguageClientAware {
     /** A proxy object for sending messages to the client. */
     private var client: LanguageClient? = null
 
+    @OptIn(KtAnalysisApiInternals::class)
     override fun initialize(params: InitializeParams?): CompletableFuture<InitializeResult> {
         // TODO: Investigate proper lifecycle management with disposables (should we store a Disposable in the class?)
 
@@ -38,6 +46,13 @@ class KotlinLanguageServer: LanguageServer, LanguageClientAware {
 
         // Set up standalone analysis API session
         val session = buildStandaloneAnalysisAPISession {
+            // FIXME: This workaround fixing a 'getService(...) must not be null' crash should be replaced (and the @OptIn removed)
+            // See also https://youtrack.jetbrains.com/issue/KT-65215/Analysis-API-Distinguish-APIs-for-Analysis-API-users-and-platforms
+            (project as MockProject).registerService(
+                KtLifetimeTokenProvider::class.java,
+                KtAlwaysAccessibleLifetimeTokenProvider::class.java
+            )
+
             buildKtModuleProvider {
                 platform = JvmPlatforms.defaultJvmPlatform
 
