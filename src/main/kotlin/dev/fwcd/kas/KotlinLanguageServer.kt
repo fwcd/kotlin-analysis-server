@@ -1,16 +1,13 @@
 package dev.fwcd.kas
 
 import com.intellij.mock.MockProject
-import com.intellij.openapi.util.Disposer
 import org.eclipse.lsp4j.*
 import org.eclipse.lsp4j.services.*
 import org.jetbrains.kotlin.analysis.api.KtAnalysisApiInternals
 import org.jetbrains.kotlin.analysis.api.lifetime.KtLifetimeTokenProvider
 import org.jetbrains.kotlin.analysis.api.standalone.KtAlwaysAccessibleLifetimeTokenProvider
-import org.jetbrains.kotlin.analysis.api.standalone.base.project.structure.StandaloneProjectFactory
 import org.jetbrains.kotlin.analysis.api.standalone.buildStandaloneAnalysisAPISession
 import org.jetbrains.kotlin.analysis.project.structure.builder.buildKtSourceModule
-import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreApplicationEnvironmentMode
 import org.jetbrains.kotlin.platform.jvm.JvmPlatforms
 import java.net.URI
 import java.nio.file.Path
