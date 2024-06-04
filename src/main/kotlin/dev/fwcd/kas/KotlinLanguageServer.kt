@@ -12,6 +12,9 @@ import org.jetbrains.kotlin.platform.jvm.JvmPlatforms
 import java.net.URI
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
+import java.util.logging.Logger
+
+private val LOG = Logger.getLogger(KotlinLanguageServer::class.java.name)
 
 /**
  * The language server implementation, responsible for basic lifecycle management, i.e.
@@ -30,8 +33,9 @@ class KotlinLanguageServer: LanguageServer, LanguageClientAware {
     @OptIn(KtAnalysisApiInternals::class)
     override fun initialize(params: InitializeParams?): CompletableFuture<InitializeResult> {
         // TODO: Investigate proper lifecycle management with disposables (should we store a Disposable in the class?)
+        // TODO: Add a proper logging abstraction that uses LSP's logMessage underneath
 
-        // Locate sources
+        client?.logMessage(MessageParams(MessageType.Info, "Locating sources..."))
         // TODO: Make source-resolution more flexible (currently only Gradle-style src/main/kotlin folders are considered)
         val workspaceFolders = params?.workspaceFolders ?: listOf()
         val sourceRoots = workspaceFolders
@@ -41,7 +45,7 @@ class KotlinLanguageServer: LanguageServer, LanguageClientAware {
         // https://stackoverflow.com/questions/17460777/stop-java-coffee-cup-icon-from-appearing-in-the-dock-on-mac-osx
         System.setProperty("apple.awt.UIElement", "true")
 
-        // Set up standalone analysis API session
+        client?.logMessage(MessageParams(MessageType.Info, "Setting up standalone analysis API session..."))
         val session = buildStandaloneAnalysisAPISession {
             // FIXME: This workaround fixing a 'getService(...) must not be null' crash should be replaced (and the @OptIn removed)
             // See also https://youtrack.jetbrains.com/issue/KT-65215/Analysis-API-Distinguish-APIs-for-Analysis-API-users-and-platforms
